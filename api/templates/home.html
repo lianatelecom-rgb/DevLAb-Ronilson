@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - BedLab Sistema Escolar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-image: url("{% static 'img/fundo.jpg' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        h2 {
+            color: white;
+            margin-top: 40px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: rgba(255,255,255,0.9);
+        }
+        table, th, td {
+            border: 1px solid #444;
+        }
+        th {
+            background-color: #555;
+            color: white;
+        }
+        td {
+            color: black;
+        }
+        tr:nth-child(even) {
+            background-color: rgba(200,200,200,0.3);
+        }
+        a {
+            text-decoration: none;
+            color: white; /* Agora os links ficam brancos */
+            font-weight: bold;
+        }
+        .btn-link {
+            display: inline-block;
+            padding: 5px 15px;
+            background-color: #1E90FF;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .btn-link:hover {
+            background-color: #0b5fa5;
+        }
+    </style>
+</head>
+<body>
+    <h1>DevLab - Sistema Escolar</h1>
+
+    <h2>Alunos</h2>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Curso</th>
+        </tr>
+        {% for usuario in usuarios %}
+        <tr>
+            <td>{{ usuario.username }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>{{ usuario.curso }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Projetos</h2>
+    <table>
+        <tr>
+            <th>Título</th>
+            <th>Descrição</th>
+            <th>Status</th>
+        </tr>
+        {% for projeto in projetos %}
+        <tr>
+            <td>
+                <a href="{% url 'projeto-detalhe' projeto.id %}" class="btn-link">{{ projeto.titulo }}</a>
+            </td>
+            <td>{{ projeto.descricao }}</td>
+            <td>{{ projeto.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Equipes</h2>
+    <table>
+        <tr>
+            <th>Nome da Equipe</th>
+            <th>Líder</th>
+            <th>Projeto</th>
+        </tr>
+        {% for equipe in equipes %}
+        <tr>
+            <td>{{ equipe.nome }}</td>
+            <td>
+                {% if equipe.lider %}
+                    {{ equipe.lider.username }}
+                {% else %}
+                    Sem líder
+                {% endif %}
+            </td>
+            <td>
+                {% if equipe.projeto %}
+                    <a href="{% url 'projeto-detalhe' equipe.projeto.id %}" class="btn-link">{{ equipe.projeto.titulo }}</a>
+                {% else %}
+                    Sem projeto
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
