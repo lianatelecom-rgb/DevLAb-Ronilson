@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import Usuario, Projeto, Equipe, ParticipacaoProjeto, MembrosEquipe
 from django.utils.translation import gettext_lazy as _
 
-# ---------- Admin do usuário customizado ----------
+
 class UsuarioAdmin(BaseUserAdmin):
     model = Usuario
     list_display = ('username', 'email', 'curso', 'is_staff', 'is_superuser')
@@ -22,7 +22,7 @@ class UsuarioAdmin(BaseUserAdmin):
     search_fields = ('username', 'email')
     ordering = ('username',)
 
-# ---------- Registro dos modelos ----------
+
 admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(Projeto)
 admin.site.register(Equipe)

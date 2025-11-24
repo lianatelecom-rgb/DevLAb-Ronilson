@@ -1,8 +1,8 @@
-# api/models.py
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# ----------- Usuário -----------
+
 class Usuario(AbstractUser):
     TIPO_USUARIO_CHOICES = (
         ('aluno', 'Aluno'),
@@ -13,7 +13,7 @@ class Usuario(AbstractUser):
     curso = models.CharField(max_length=100, blank=True, null=True)
     matricula = models.CharField(max_length=50, blank=True, null=True)
 
-    # Corrigindo conflitos com grupos e permissões do Django
+    
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='usuarios_custom',
@@ -33,7 +33,7 @@ class Usuario(AbstractUser):
         return self.username
 
 
-# ----------- Projeto -----------
+
 class Projeto(models.Model):
     STATUS_CHOICES = (
         ('planejamento', 'Planejamento'),
@@ -51,7 +51,7 @@ class Projeto(models.Model):
         return self.titulo
 
 
-# ----------- Equipe -----------
+
 class Equipe(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField(blank=True)
@@ -62,25 +62,25 @@ class Equipe(models.Model):
         return self.nome
 
 
-# ----------- Participação em Projeto -----------
+
 class ParticipacaoProjeto(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='projetos_participando')
     projeto = models.ForeignKey(Projeto, on_delete=models.CASCADE, related_name='participantes')
 
     class Meta:
-        unique_together = ('usuario', 'projeto')  # Evita duplicação
+        unique_together = ('usuario', 'projeto')  # 
 
     def __str__(self):
         return f"{self.usuario} em {self.projeto}"
 
 
-# ----------- Membros da Equipe -----------
+
 class MembrosEquipe(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='equipes')
     equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE, related_name='membros')
 
     class Meta:
-        unique_together = ('usuario', 'equipe')  # Evita duplicação
+        unique_together = ('usuario', 'equipe')  
 
     def __str__(self):
         return f"{self.usuario} na {self.equipe}"

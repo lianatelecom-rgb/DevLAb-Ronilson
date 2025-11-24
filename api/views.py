@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
 
-# ------------------ FUNÇÃO HOME ------------------
+
 @login_required(login_url='login')
 def home(request):
     usuarios = Usuario.objects.all()
@@ -20,7 +20,7 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
-# ------------------ DETALHE DE PROJETO ------------------
+
 @login_required(login_url='login')
 def projeto_detalhe(request, pk):
     projeto = get_object_or_404(Projeto, pk=pk)
@@ -31,7 +31,7 @@ def projeto_detalhe(request, pk):
     }
     return render(request, 'projeto_detalhe.html', context)
 
-# ------------------ VIEWS DE API ------------------
+
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
@@ -52,7 +52,7 @@ class MembrosEquipeViewSet(viewsets.ModelViewSet):
     queryset = MembrosEquipe.objects.all()
     serializer_class = MembrosEquipeSerializer
 
-# ------------------ VIEWS DE RELACIONAMENTO ------------------
+
 class UsuarioProjetosView(APIView):
     def get(self, request, pk):
         projetos = Projeto.objects.filter(participacaoprojeto__usuario_id=pk)
@@ -71,6 +71,6 @@ class UsuarioVisaoGeralView(APIView):
         data = {
             "usuario": usuario.nome,
             "projetos": [p.nome for p in usuario.projetos.all()],
-            "lider": usuario.is_lider  # se tiver campo is_lider
+            "lider": usuario.is_lider  
         }
         return Response(data)
