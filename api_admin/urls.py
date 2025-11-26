@@ -1,20 +1,15 @@
 from django.contrib import admin
 from django.urls import path, include
-from devlab.views import home
 from rest_framework import routers
 from api_admin.views import UsuarioViewSet, ProjetoViewSet, EquipeViewSet, ParticipacaoProjetoViewSet
 
-# Router da API
 router = routers.DefaultRouter()
 router.register(r'usuarios', UsuarioViewSet)
 router.register(r'projetos', ProjetoViewSet)
 router.register(r'equipes', EquipeViewSet)
 router.register(r'participacoes', ParticipacaoProjetoViewSet)
 
-# URLs principais
 urlpatterns = [
-    path('', home, name='home'),                  # Página inicial
-    path('admin/', admin.site.urls),              # Admin do Django
-    path('api/', include(router.urls)),           # API REST
-    path('accounts/', include('django.contrib.auth.urls')),  # Login/Logout do Django
+    path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
 ]
