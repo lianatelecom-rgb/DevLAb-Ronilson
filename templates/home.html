@@ -5,18 +5,21 @@
     <meta charset="UTF-8">
     <title>Home - DevLab</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* Fundo da página */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 0;
-            background: url("{% static 'img/fundo.jpg' %}") no-repeat center center fixed;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("{% static 'img/fundo.jpg' %}?ver=3") no-repeat center center fixed;
             background-size: cover;
-            color: white; /* texto visível sobre a imagem */
+            color: white;
         }
 
-        /* Header com DevLab chamativo */
         header {
             display: flex;
             justify-content: space-between;
@@ -31,8 +34,8 @@
             font-weight: bold;
             flex: 1;
             text-align: center;
-            color: #5999f2ff; /* azul chamativo */
-            text-shadow: 2px 2px 8px rgba(240, 230, 230, 0.7); /* sombra */
+            color: #f4f0f0ff;
+            text-shadow: 2px 2px 8px rgba(239, 16, 16, 0.7);
         }
 
         nav a {
@@ -42,73 +45,92 @@
             font-weight: bold;
         }
 
-        nav a:hover {
-            text-decoration: underline;
-        }
+        nav a:hover { text-decoration: underline; }
 
-        /* Usuário autenticado em azul */
-        .user-nav {
-            color: #3498db; /* azul */
-            font-weight: bold;
-        }
+        .user-nav { color: #3498db; font-weight: bold; }
+        .user-nav a { color: #3498db; text-decoration: none; }
+        .user-nav a:hover { text-decoration: underline; }
 
-        .user-nav a {
-            color: #3498db;
-            text-decoration: none;
-        }
+        main { padding: 30px; }
 
-        .user-nav a:hover {
-            text-decoration: underline;
-        }
-
-        main {
-            padding: 30px;
-        }
-
-        .search-box {
-            margin-bottom: 25px;
-        }
-
-        input[type="text"] {
-            padding: 10px;
-            width: 300px;
-            border-radius: 4px;
-            border: 1px solid #100101ff;
-        }
-
+        .search-box { margin-bottom: 25px; }
+        input[type="text"] { padding: 10px; width: 300px; border-radius: 6px; border: 1px solid #100101ff; }
         button {
             padding: 10px 15px;
             border: none;
-            background-color: #170aaaff;
+            background: linear-gradient(45deg, #5999f2, #170aaaff);
             color: white;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: all 0.3s;
         }
-
         button:hover {
-            background-color: #f0f1f7ff;
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #170aaaff, #5999f2);
+            color: #fff;
         }
 
-        .projects, .users {
-            margin-top: 30px;
-        }
-
-        .projects ul, .users ul {
-            list-style: none;
-            padding: 0;
-        }
-
+        .projects, .users { margin-top: 30px; }
+        .projects ul, .users ul { list-style: none; padding: 0; }
         .projects li, .users li {
             background: rgba(0,0,0,0.4);
             padding: 12px 15px;
             margin-bottom: 10px;
             border-left: 4px solid #2008f6ff;
-            border-radius: 4px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+            opacity: 0;
+            animation: fadeIn 0.8s forwards;
+        }
+        .projects li:hover, .users li:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.4); }
+
+        h2, h3 { color: white; margin-bottom: 10px; }
+
+        /* BLOCO DE PERFIL */
+        .perfil-box {
+            background: rgba(0,0,0,0.45);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+            margin-bottom: 25px;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            opacity: 0;
+            animation: fadeIn 1s forwards;
         }
 
-        h2, h3 {
+        /* Dropdown Perfil */
+        .perfil-dropdown {
+            display: inline-block;
+            position: relative;
+            margin-left: 15px;
+        }
+        .perfil-dropdown button {
+            background-color: #170aaaff;
             color: white;
-            margin-bottom: 10px;
+            border-radius: 6px;
+            padding: 6px 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .perfil-dropdown button:hover {
+            transform: scale(1.05);
+            background-color: #5999f2ff;
+        }
+        #perfilConteudo {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: rgba(0,0,0,0.95);
+            color: white;
+            min-width: 220px;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transition: opacity 0.3s ease;
+            z-index: 100;
         }
 
         footer {
@@ -120,6 +142,8 @@
             width: 100%;
             bottom: 0;
         }
+
+        @keyframes fadeIn { to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -132,6 +156,39 @@
                     <a href="{% url 'admin:index' %}">Admin</a> |
                     <a href="{% url 'logout' %}">Sair</a>
                 </span>
+
+                <!-- Botão de Perfil -->
+                <div class="perfil-dropdown">
+                    <button onclick="togglePerfil()"><i class="fa-solid fa-user"></i> Perfil ▼</button>
+                    <div id="perfilConteudo">
+                        {% if user.tipo == "estudante" %}
+                            <strong>Aluno</strong><br>
+                            Curso: {{ user.curso }}<br>
+                            Matrícula: {{ user.matricula }}<br>
+                            Telefone: {{ user.telefone }}
+                        {% elif user.tipo == "professor" %}
+                            <strong>Professor</strong><br>
+                            Matrícula: {{ user.matricula }}<br>
+                            Telefone: {{ user.telefone }}<br>
+                            Data de cadastro: {{ user.date_joined }}
+                        {% elif user.tipo == "coordenador" %}
+                            <strong>Coordenador</strong><br>
+                            Telefone: {{ user.telefone }}<br>
+                            Data de cadastro: {{ user.date_joined }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <script>
+                    function togglePerfil() {
+                        var x = document.getElementById("perfilConteudo");
+                        if (x.style.display === "none" || x.style.display === "") {
+                            x.style.display = "block";
+                        } else {
+                            x.style.display = "none";
+                        }
+                    }
+                </script>
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
             {% endif %}
@@ -140,6 +197,19 @@
 
     <main>
         <h2>Painel Inicial</h2>
+
+        <!-- BLOCO DE PERFIL -->
+        <div class="perfil-box">
+            {% if user.tipo == "coordenador" %}
+                Você está logado como <strong>COORDENADOR</strong>.
+            {% elif user.tipo == "professor" %}
+                Você está logado como <strong>PROFESSOR</strong>.
+            {% elif user.tipo == "estudante" %}
+                Você está logado como <strong>ALUNO</strong>.
+            {% else %}
+                Perfil desconhecido.
+            {% endif %}
+        </div>
 
         <!-- Caixa de busca -->
         <div class="search-box">
@@ -172,7 +242,8 @@
                 {% for usuario in usuarios %}
                     <li>
                         <strong>{{ usuario.username }}</strong><br>
-                        Curso: {{ usuario.curso }}
+                        Curso: {{ usuario.curso }}<br>
+                        Tipo: {{ usuario.tipo }}
                     </li>
                 {% empty %}
                     <li>Nenhum usuário encontrado.</li>

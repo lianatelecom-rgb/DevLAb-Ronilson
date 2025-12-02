@@ -1,21 +1,21 @@
-from django.shortcuts import render
-from api_projetos.models import Projeto
-from api_aluno.models import Usuario
+from django.shortcuts import render, redirect
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 
+
+@login_required(login_url='login')
 def home(request):
-    query = request.GET.get('q', '').strip()  # remove espaços desnecessários
-
-    if query:
-        projetos = Projeto.objects.filter(titulo__icontains=query)
-        usuarios = Usuario.objects.filter(username__icontains=query)
-    else:
-        projetos = Projeto.objects.all()
-        usuarios = Usuario.objects.all()
-
+    
+    projetos = []  
+    usuarios = []
     context = {
         'projetos': projetos,
         'usuarios': usuarios,
-        'query': query,  # útil para manter o valor da busca na input
     }
-
     return render(request, 'home.html', context)
+
+
+
+def sair(request):
+    logout(request)
+    return redirect('login')

@@ -1,20 +1,32 @@
 from django.contrib import admin
 from django.urls import path, include
-from devlab.views import home
-from rest_framework import routers
-from api_admin.views import UsuarioViewSet, ProjetoViewSet, EquipeViewSet, ParticipacaoProjetoViewSet
+from api_projetos import views
+from django.contrib.auth import views as auth_views
 
-# Router da API
-router = routers.DefaultRouter()
-router.register(r'usuarios', UsuarioViewSet)
-router.register(r'projetos', ProjetoViewSet)
-router.register(r'equipes', EquipeViewSet)
-router.register(r'participacoes', ParticipacaoProjetoViewSet)
-
-# URLs principais
 urlpatterns = [
-    path('', home, name='home'),                  # Página inicial
-    path('admin/', admin.site.urls),              # Admin do Django
-    path('api/', include(router.urls)),           # API REST
-    path('accounts/', include('django.contrib.auth.urls')),  # Login/Logout do Django
+    path('admin/', admin.site.urls),
+
+    # Página inicial (só acessa logado)
+    path('', views.home, name='home'),
+
+    # Login
+    path(
+        'accounts/login/',
+        auth_views.LoginView.as_view(template_name='registration/login.html'),
+        name='login'
+    ),
+
+    # Logout
+    path(
+        'accounts/logout/',
+        views.sair,  # usando a view de logout do views.py
+        name='logout'
+    ),
+
+    # Redirecionamento pós-login
+    path('accounts/redirect/', views.redirecionar_usuario, name='redirect_user'),
+
+    # APIs
+    path('api/alunos/', include('api_usuarios.urls')),
+    path('api/projetos/', include('api_projetos.urls')),
 ]
