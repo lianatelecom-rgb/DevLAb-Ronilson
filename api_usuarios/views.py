@@ -3,10 +3,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import EditarPerfilForm, CriarUsuarioForm
+from django.contrib.auth.models import User
+from django.db.models import Q
+from .models import Usuario
 
-# ----------------------------
-# LOGIN / LOGOUT
-# ----------------------------
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -17,7 +18,6 @@ def login_view(request):
         if usuario:
             login(request, usuario)
 
-            # Redireciona de acordo com o tipo
             if usuario.tipo == 'coordenador':
                 return redirect('home_coordenador')
             elif usuario.tipo == 'professor':
@@ -39,9 +39,6 @@ def logout_view(request):
     return redirect('login')
 
 
-# ----------------------------
-# PERFIL
-# ----------------------------
 @login_required
 def editar_perfil(request):
     if request.method == 'POST':
@@ -49,13 +46,7 @@ def editar_perfil(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Perfil atualizado com sucesso!")
-            # Redireciona conforme tipo de usuário
-            if request.user.tipo == 'coordenador':
-                return redirect('home_coordenador')
-            elif request.user.tipo == 'professor':
-                return redirect('home_professor')
-            else:
-                return redirect('home_estudante')
+            return redirect('home_estudante')
     else:
         form = EditarPerfilForm(instance=request.user)
 
@@ -67,9 +58,6 @@ def ver_perfil(request):
     return render(request, 'ver_perfil.html', {'usuario': request.user})
 
 
-# ----------------------------
-# CRIAR USUÁRIO (somente coordenador)
-# ----------------------------
 @login_required
 def criar_usuario(request):
     if request.user.tipo != 'coordenador':
@@ -80,10 +68,7 @@ def criar_usuario(request):
         form = CriarUsuarioForm(request.POST)
         if form.is_valid():
             usuario = form.save(commit=False)
-            # Salva senha corretamente
             usuario.set_password(form.cleaned_data['senha'])
-            # Salva matrícula
-            usuario.matricula = form.cleaned_data.get('matricula', '')
             usuario.save()
             messages.success(request, "Usuário criado com sucesso!")
             return redirect('home_coordenador')
@@ -91,3 +76,24 @@ def criar_usuario(request):
         form = CriarUsuarioForm()
 
     return render(request, 'criar_usuario.html', {'form': form})
+
+
+
+@login_required
+def listar_usuarios(request):
+    if request.user.tipo != 'coordenador':
+        messages.error(request, "Acesso negado!")
+        return redirect('login')
+
+    query = request.GET.get('q')
+    if query:
+        usuarios = Usuario.objects.filter(
+            Q(username__icontains=query) | Q(matricula__icontains=query)
+        )
+    else:
+        usuarios = Usuario.objects.all()
+
+    return render(request, 'listar_usuarios.html', {
+        'usuarios': usuarios,
+        'query': query
+    })

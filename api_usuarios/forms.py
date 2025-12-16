@@ -2,7 +2,9 @@ from django import forms
 from .models import Usuario
 from api_projetos.models import Equipe
 
-# Form para editar perfil
+# ================================
+# FORM PARA EDITAR PERFIL
+# ================================
 class EditarPerfilForm(forms.ModelForm):
     senha_nova = forms.CharField(
         label='Nova Senha',
@@ -13,7 +15,7 @@ class EditarPerfilForm(forms.ModelForm):
 
     class Meta:
         model = Usuario
-        fields = ['email']  
+        fields = ['email', 'matricula']  # Adicionado matrícula
 
     def save(self, commit=True):
         usuario = super().save(commit=False)
@@ -24,15 +26,17 @@ class EditarPerfilForm(forms.ModelForm):
             usuario.save()
         return usuario
 
-# Form para criar equipe
+# ================================
+# FORM PARA CRIAR EQUIPE
+# ================================
 class CriarEquipeForm(forms.ModelForm):
     class Meta:
         model = Equipe
         fields = ['nome', 'descricao', 'membros']
 
-# ==========================
-# Form para criar usuário
-# ==========================
+# ================================
+# FORM PARA CRIAR USUÁRIO
+# ================================
 class CriarUsuarioForm(forms.ModelForm):
     senha = forms.CharField(
         label='Senha',
@@ -45,7 +49,7 @@ class CriarUsuarioForm(forms.ModelForm):
 
     class Meta:
         model = Usuario
-        fields = ['username', 'email', 'tipo']
+        fields = ['username', 'email', 'tipo', 'matricula']  # Adicionado matrícula
 
     def clean(self):
         cleaned_data = super().clean()

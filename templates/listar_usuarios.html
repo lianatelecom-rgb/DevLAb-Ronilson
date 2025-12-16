@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(rgba(0,0,50,0.2), rgba(0,0,50,0.2)), url("{% static 'img/fundo.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        font-family: Arial, sans-serif;
+        color: #fff;
+    }
+    .btn {
+        margin-right: 8px;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    .btn-azul { background-color: #007bff; color: #fff; }
+    .btn-cinza { background-color: #6c757d; color: #fff; }
+    table { background-color: rgba(242, 238, 238, 0.5); width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { padding: 10px; text-align: left; }
+    th { background-color: rgba(67, 56, 56, 0.7); }
+    tr:nth-child(even) { background-color: rgba(255,255,255,0.1); }
+    input[type="text"] {
+        padding: 6px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        width: 250px;
+        margin-right: 8px;
+    }
+</style>
+
+<h1>Todos os Usuários</h1>
+
+<form method="get" style="margin-bottom: 20px;">
+    <input type="text" name="q" placeholder="Buscar por nome ou matrícula" value="{{ query|default:'' }}">
+    <button type="submit" class="btn btn-azul">🔍 Buscar</button>
+    <a href="{% url 'home_coordenador' %}"><button type="button" class="btn btn-cinza">Voltar</button></a>
+</form>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Matrícula</th>
+            <th>Tipo</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuarios %}
+        <tr>
+            <td>{{ usuario.username }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>{{ usuario.matricula }}</td>
+            <td>{{ usuario.tipo }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Nenhum usuário encontrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
