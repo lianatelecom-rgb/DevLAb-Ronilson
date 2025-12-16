@@ -1,25 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Criar Equipe</h1>
+
 <form method="post">
     {% csrf_token %}
-    <p>Nome: <input type="text" name="nome" required></p>
-    <p>Descrição: <textarea name="descricao" required></textarea></p>
-    <p>Projeto: 
-        <select name="projeto">
-            {% for projeto in projetos %}
-            <option value="{{ projeto.id }}">{{ projeto.titulo }}</option>
-            {% endfor %}
-        </select>
-    </p>
-    <p>Líder: 
-        <select name="lider">
-            {% for lider in lideres %}
-            <option value="{{ lider.id }}">{{ lider.username }}</option>
-            {% endfor %}
-        </select>
-    </p>
+    {{ form.as_p }}
     <button type="submit">Criar</button>
 </form>
+
 <a href="{% url 'home_coordenador' %}">Cancelar</a>
 {% endblock %}

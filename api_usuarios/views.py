@@ -3,8 +3,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import EditarPerfilForm
+from django.contrib.auth.models import User
+from .forms import CriarUsuarioForm  # vamos criar esse form
 
-
+# ----------------------------
+# LOGIN / LOGOUT
+# ----------------------------
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -38,7 +42,7 @@ def logout_view(request):
 
 
 # ----------------------------
-# View para editar perfil
+# PERFIL
 # ----------------------------
 @login_required
 def editar_perfil(request):
@@ -54,11 +58,30 @@ def editar_perfil(request):
     return render(request, 'editar_perfil.html', {'form': form})
 
 
-# ----------------------------
-# View para VER PERFIL (nº 3)
-# ----------------------------
 @login_required
 def ver_perfil(request):
-    return render(request, 'ver_perfil.html', {
-        'usuario': request.user
-    })
+    return render(request, 'ver_perfil.html', {'usuario': request.user})
+
+
+# ----------------------------
+# CRIAR USUÁRIO (somente coordenador)
+# ----------------------------
+@login_required
+def criar_usuario(request):
+    if request.user.tipo != 'coordenador':
+        messages.error(request, "Acesso negado!")
+        return redirect('login')
+
+    if request.method == 'POST':
+        form = CriarUsuarioForm(request.POST)
+        if form.is_valid():
+            usuario = form.save(commit=False)
+            # Salva senha corretamente
+            usuario.set_password(form.cleaned_data['password'])
+            usuario.save()
+            messages.success(request, "Usuário criado com sucesso!")
+            return redirect('home_coordenador')
+    else:
+        form = CriarUsuarioForm()
+
+    return render(request, 'criar_usuario.html', {'form': form})

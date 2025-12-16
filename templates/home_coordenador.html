@@ -4,20 +4,43 @@
 {% block content %}
 <style>
     body {
-        background: url("{% static 'img/fundo.jpg' %}") no-repeat center center fixed;
+        background: linear-gradient(rgba(0,0,50,0.2), rgba(0,0,50,0.2)), url("{% static 'img/fundo.jpg' %}") no-repeat center center fixed;
         background-size: cover;
+        font-family: Arial, sans-serif;
+        color: #fff;
     }
+    .btn {
+        margin-right: 8px;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    .btn-verde { background-color: #28a745; color: #fff; }
+    .btn-azul { background-color: #007bff; color: #fff; }
+    .btn-vermelho { background-color: #dc3545; color: #fff; }
+    .btn-laranja { background-color: #fd7e14; color: #fff; }
+    .btn-cinza { background-color: #6c757d; color: #fff; }
+    table { background-color: rgba(0,0,0,0.5); width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { padding: 10px; text-align: left; }
+    th { background-color: rgba(0,0,0,0.7); }
+    tr:nth-child(even) { background-color: rgba(255,255,255,0.1); }
 </style>
 
-<h1>Home do Coordenador</h1>
+<h1>Sala do Coordenador</h1>
 
-<div style="margin-bottom:20px;">
-    <a href="{% url 'criar_projeto' %}"><button>Criar Projeto</button></a>
-    <a href="{% url 'criar_equipe' %}"><button>Criar Equipe</button></a>
+<div style="margin-bottom: 20px;">
+    <a href="{% url 'ver_perfil' %}"><button class="btn btn-azul">Ver Meu Perfil</button></a>
+    <a href="{% url 'criar_usuario' %}"><button class="btn btn-verde">Criar Usuário</button></a>
+    <a href="{% url 'criar_projeto' %}"><button class="btn btn-laranja">Criar Projeto</button></a>
+    <a href="{% url 'criar_equipe' %}"><button class="btn btn-vermelho">Criar Equipe</button></a>
+    <a href="javascript:history.back()"><button class="btn btn-cinza">Voltar</button></a>
+    <a href="{% url 'logout' %}"><button class="btn btn-cinza">Sair</button></a>
 </div>
 
 <h2>Projetos</h2>
-<table border="1" cellpadding="5">
+<table border="1">
     <tr>
         <th>Título</th>
         <th>Cliente</th>
@@ -31,7 +54,11 @@
         <td>{{ projeto.cliente }}</td>
         <td>{{ projeto.status }}</td>
         <td>{{ projeto.professor_responsavel.username }}</td>
-        <td><a href="{% url 'detalhe_projeto' projeto.id %}">Ver Detalhes</a></td>
+        <td>
+            <a href="{% url 'detalhe_projeto' projeto.id %}"><button class="btn btn-azul">Ver</button></a>
+            <a href="{% url 'editar_projeto' projeto.id %}"><button class="btn btn-laranja">Editar</button></a>
+            <a href="{% url 'deletar_projeto' projeto.id %}"><button class="btn btn-vermelho">Deletar</button></a>
+        </td>
     </tr>
     {% empty %}
     <tr><td colspan="5">Nenhum projeto cadastrado.</td></tr>
@@ -39,11 +66,12 @@
 </table>
 
 <h2>Equipes</h2>
-<table border="1" cellpadding="5">
+<table border="1">
     <tr>
         <th>Nome</th>
         <th>Projeto</th>
         <th>Líder</th>
+        <th>Membros</th>
         <th>Ações</th>
     </tr>
     {% for equipe in equipes %}
@@ -51,10 +79,21 @@
         <td>{{ equipe.nome }}</td>
         <td>{{ equipe.projeto.titulo }}</td>
         <td>{{ equipe.lider.username }}</td>
-        <td><a href="#">Ver Detalhes</a></td>
+        <td>
+            {% for membro in equipe.participacaoequipe_set.all %}
+                {{ membro.usuario.username }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+                Nenhum membro
+            {% endfor %}
+        </td>
+        <td>
+            <a href="{% url 'detalhe_equipe' equipe.id %}"><button class="btn btn-azul">Ver</button></a>
+            <a href="{% url 'editar_equipe' equipe.id %}"><button class="btn btn-laranja">Editar</button></a>
+            <a href="{% url 'deletar_equipe' equipe.id %}"><button class="btn btn-vermelho">Deletar</button></a>
+        </td>
     </tr>
     {% empty %}
-    <tr><td colspan="4">Nenhuma equipe cadastrada.</td></tr>
+    <tr><td colspan="5">Nenhuma equipe cadastrada.</td></tr>
     {% endfor %}
 </table>
 {% endblock %}

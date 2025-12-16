@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background: url("{% static 'img/fundo.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+    }
+    .form-container {
+        background-color: rgba(255, 255, 255, 0.85);
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    button {
+        margin-right: 5px;
+    }
+</style>
+
+<h1>Editar Projeto: {{ projeto.titulo }}</h1>
+
+<div class="form-container">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar Alterações</button>
+        <a href="{% url 'home_coordenador' %}"><button type="button">Cancelar</button></a>
+    </form>
+</div>
+
+{% endblock %}

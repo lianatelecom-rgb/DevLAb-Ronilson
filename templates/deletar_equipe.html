@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Deletar Equipe: {{ equipe.nome }}</h1>
+<p>Tem certeza que deseja deletar esta equipe?</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Sim, deletar</button>
+    <a href="{% url 'home_coordenador' %}">Cancelar</a>
+</form>
+
+{% endblock %}

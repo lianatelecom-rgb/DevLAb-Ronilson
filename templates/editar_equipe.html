@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Editar Equipe: {{ equipe.nome }}</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <label for="nome">Nome:</label>
+    <input type="text" name="nome" id="nome" value="{{ equipe.nome }}" required><br><br>
+
+    <label for="descricao">Descrição:</label>
+    <textarea name="descricao" id="descricao" required>{{ equipe.descricao }}</textarea><br><br>
+
+    <label for="projeto">Projeto:</label>
+    <select name="projeto" id="projeto" required>
+        {% for projeto in projetos %}
+            <option value="{{ projeto.id }}" {% if projeto.id == equipe.projeto.id %}selected{% endif %}>
+                {{ projeto.nome }}
+            </option>
+        {% endfor %}
+    </select><br><br>
+
+    <label for="lider">Líder:</label>
+    <select name="lider" id="lider" required>
+        {% for lider in lideres %}
+            <option value="{{ lider.id }}" {% if lider.id == equipe.lider.id %}selected{% endif %}>
+                {{ lider.username }}
+            </option>
+        {% endfor %}
+    </select><br><br>
+
+    <button type="submit">Salvar Alterações</button>
+</form>
+
+<a href="{% url 'home_coordenador' %}">Cancelar</a>
+
+{% endblock %}

@@ -3,44 +3,9 @@
 
 <h1>Criar Projeto</h1>
 
-<form method="post" action="{% url 'criar_projeto' %}">
+<form method="post">
     {% csrf_token %}
-
-    <p>Título:
-        <input type="text" name="titulo" required>
-    </p>
-
-    <p>Descrição:
-        <textarea name="descricao" required></textarea>
-    </p>
-
-    <p>Cliente:
-        <input type="text" name="cliente" required>
-    </p>
-
-    <p>Status:
-        <select name="status">
-            <option value="ativo">Ativo</option>
-            <option value="concluido">Concluído</option>
-        </select>
-    </p>
-
-    <p>Data de Início:
-        <input type="date" name="data_inicio" required>
-    </p>
-
-    <p>Data Prevista de Fim:
-        <input type="date" name="data_fim_prevista" required>
-    </p>
-
-    <p>Professor Responsável:
-        <select name="professor" required>
-            {% for professor in professores %}
-                <option value="{{ professor.id }}">{{ professor.username }}</option>
-            {% endfor %}
-        </select>
-    </p>
-
+    {{ form.as_p }}
     <button type="submit">Criar</button>
 </form>
 
