@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Projeto, Equipe, ParticipacaoEquipe
 from .forms import ProjetoForm
-from api_usuarios.forms import CriarEquipeForm
 from api_usuarios.models import Usuario
 
 
@@ -66,9 +65,22 @@ def deletar_projeto(request, pk):
 
 @login_required
 def detalhe_projeto(request, pk):
+    # Pega o projeto pelo ID
     projeto = get_object_or_404(Projeto, pk=pk)
-    equipes = Equipe.objects.filter(projetos=projeto)
-    return render(request, 'detalhe_projeto.html', {'projeto': projeto, 'equipes': equipes})
+    
+    # Busca todas as equipes relacionadas a este projeto
+    # Use o campo correto 'projetos' (ManyToManyField) em Equipe
+    equipes = Equipe.objects.filter(projetos=projeto).distinct()
+    
+    # Busca todos os alunos que participam dessas equipes
+    # ParticipacaoEquipe relaciona Usuario e Equipe
+    alunos = Usuario.objects.filter(participacaoequipe__equipe__in=equipes).distinct()
+
+    return render(request, 'detalhe_projeto.html', {
+        'projeto': projeto,
+        'equipes': equipes,
+        'alunos': alunos
+    })
 
 
 @login_required
@@ -76,7 +88,10 @@ def home_professor(request):
     if request.user.tipo != 'professor':
         return redirect('login')
 
+    # Projetos que o professor é responsável
     projetos = Projeto.objects.filter(professor_responsavel=request.user)
+    
+    # Equipes associadas a esses projetos
     equipes = Equipe.objects.filter(projetos__in=projetos).distinct()
 
     return render(request, 'home_professor.html', {
@@ -90,10 +105,13 @@ def home_estudante(request):
     if request.user.tipo != 'estudante':
         return redirect('login')
 
+    # Participações do estudante
     participacoes = ParticipacaoEquipe.objects.filter(usuario=request.user)
+    
+    # Equipes em que ele participa
     equipes = Equipe.objects.filter(participacaoequipe__in=participacoes).distinct()
     
-    
+    # Projetos dessas equipes
     projetos = Projeto.objects.filter(id__in=equipes.values_list('projetos__id', flat=True)).distinct()
 
     return render(request, 'home_estudante.html', {

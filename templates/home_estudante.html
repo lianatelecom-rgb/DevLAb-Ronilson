@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<!-- Estilo -->
 <style>
     body {
         background-color: #f9f9f9;
@@ -42,7 +44,7 @@
     <a href="{% url 'logout' %}" class="btn btn-sair">Sair</a>
 </div>
 
-{% comment %} Projetos únicos que o aluno participa {% endcomment %}
+<!-- Projetos que o aluno participa -->
 <h2>Projetos que você participa</h2>
 <table>
     <tr>
@@ -52,25 +54,26 @@
         <th>Professor Responsável</th>
     </tr>
     {% for projeto in projetos %}
-    <tr>
-        <td>{{ projeto.titulo }}</td>
-        <td>{{ projeto.cliente }}</td>
-        <td>{{ projeto.status }}</td>
-        <td>
-            {% if projeto.professor_responsavel %}
-                {{ projeto.professor_responsavel.username }}
-            {% else %}
-                —
-            {% endif %}
-        </td>
-    </tr>
+        <tr>
+            <td>{{ projeto.titulo }}</td>
+            <td>{{ projeto.cliente }}</td>
+            <td>{{ projeto.status }}</td>
+            <td>
+                {% if projeto.professor_responsavel %}
+                    {{ projeto.professor_responsavel.username }}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        </tr>
     {% empty %}
-    <tr>
-        <td colspan="4" style="text-align: center;">Você não participa de nenhum projeto.</td>
-    </tr>
+        <tr>
+            <td colspan="4" style="text-align: center;">Você não participa de nenhum projeto.</td>
+        </tr>
     {% endfor %}
 </table>
 
+<!-- Equipes que o aluno participa -->
 <h2 style="margin-top: 30px;">Equipes que você participa</h2>
 <table>
     <tr>
@@ -80,22 +83,23 @@
         <th>Membros</th>
     </tr>
     {% for equipe in equipes %}
-    <tr>
-        <td>{{ equipe.nome }}</td>
-        <td>{{ equipe.projeto.titulo }}</td>
-        <td>{{ equipe.lider.username }}</td>
-        <td>
-            {% for membro in equipe.participacaoequipe_set.all %}
-                {{ membro.usuario.username }}{% if not forloop.last %}, {% endif %}
-            {% empty %}
-                Nenhum membro
-            {% endfor %}
-        </td>
-    </tr>
+        <tr>
+            <td>{{ equipe.nome }}</td>
+            <td>{{ equipe.projeto.titulo }}</td>
+            <td>{{ equipe.lider.username }}</td>
+            <td>
+                {% for membro in equipe.participacaoequipe_set.all %}
+                    {{ membro.usuario.username }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    Nenhum membro
+                {% endfor %}
+            </td>
+        </tr>
     {% empty %}
-    <tr>
-        <td colspan="4" style="text-align: center;">Você não participa de nenhuma equipe.</td>
-    </tr>
+        <tr>
+            <td colspan="4" style="text-align: center;">Você não participa de nenhuma equipe.</td>
+        </tr>
     {% endfor %}
 </table>
+
 {% endblock %}

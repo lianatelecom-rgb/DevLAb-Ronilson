@@ -123,6 +123,8 @@ def editar_usuario(request, usuario_id):
     return render(request, 'editar_usuario.html', {'form': form, 'usuario': usuario})
 
 
+
+
 @login_required
 def home_coordenador(request):
     if request.user.tipo != 'coordenador':
@@ -141,7 +143,6 @@ def home_professor(request):
         return redirect('login')
 
     projetos = Projeto.objects.filter(professor_responsavel=request.user)
-    # Equipes vinculadas a esses projetos
     equipes = Equipe.objects.filter(projeto__in=projetos)
     return render(request, 'home_professor.html', {'projetos': projetos, 'equipes': equipes})
 
@@ -152,7 +153,11 @@ def home_estudante(request):
         messages.error(request, "Acesso negado!")
         return redirect('login')
 
+    
     participacoes = ParticipacaoEquipe.objects.filter(usuario=request.user)
     equipes = Equipe.objects.filter(id__in=participacoes.values_list('equipe_id', flat=True))
-    projetos = Projeto.objects.filter(equipe__in=equipes).distinct()
+
+    
+    projetos = Projeto.objects.filter(id__in=equipes.values_list('projeto_id', flat=True)).distinct()
+
     return render(request, 'home_estudante.html', {'projetos': projetos, 'equipes': equipes})
